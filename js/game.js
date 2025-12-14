@@ -1,12 +1,14 @@
 /**
  * Aria's Eiland Avontuur - Main Game Logic
  * Handles game state, UI interactions, and challenge flow
- * Supports multiple islands with different difficulty levels
+ * Supports multiple content types (Math, Writing, etc.) and islands
  */
 
 class AriaGame {
     constructor() {
         // Game state
+        this.currentContentType = 'math'; // 'math', 'writing', etc.
+        this.currentIslands = ISLANDS; // Will change based on content type
         this.currentIsland = null;
         this.currentVillage = null;
         this.currentChallenge = null;
@@ -15,6 +17,7 @@ class AriaGame {
         // DOM elements
         this.screens = {
             start: document.getElementById('start-screen'),
+            content: document.getElementById('content-screen'),
             islands: document.getElementById('islands-screen'),
             map: document.getElementById('map-screen'),
             village: document.getElementById('village-screen'),
@@ -34,16 +37,41 @@ class AriaGame {
     }
 
     // ==========================================
+    // CONTENT TYPE MANAGEMENT
+    // ==========================================
+
+    getIslandsForContentType(contentType) {
+        switch (contentType) {
+            case 'writing':
+                return WRITING_ISLANDS;
+            case 'math':
+            default:
+                return ISLANDS;
+        }
+    }
+
+    selectContentType(contentType) {
+        this.currentContentType = contentType;
+        this.currentIslands = this.getIslandsForContentType(contentType);
+        this.progress = this.loadProgress();
+        this.updateIslandsUI();
+        this.showScreen('islands');
+        this.playSound('start');
+    }
+
+    // ==========================================
     // PROGRESS MANAGEMENT
     // ==========================================
 
     loadProgress() {
-        const saved = localStorage.getItem('ariaProgress');
+        const storageKey = `ariaProgress_${this.currentContentType}`;
+        const saved = localStorage.getItem(storageKey);
+        const islands = this.getIslandsForContentType(this.currentContentType);
+        
         if (saved) {
             const parsed = JSON.parse(saved);
-            // Validate that the progress structure matches current ISLANDS structure
-            // If not (e.g., old version with VILLAGES), reset progress
-            if (parsed.islands && parsed.islands.length === ISLANDS.length) {
+            // Validate that the progress structure matches current islands structure
+            if (parsed.islands && parsed.islands.length === islands.length) {
                 return parsed;
             }
         }
@@ -52,8 +80,10 @@ class AriaGame {
     }
 
     createDefaultProgress() {
+        const islands = this.getIslandsForContentType(this.currentContentType);
         return {
-            islands: ISLANDS.map((island, islandIndex) => ({
+            contentType: this.currentContentType,
+            islands: islands.map((island, islandIndex) => ({
                 id: island.id,
                 unlocked: islandIndex === 0,
                 completed: false,
@@ -77,11 +107,13 @@ class AriaGame {
     }
 
     saveProgress() {
-        localStorage.setItem('ariaProgress', JSON.stringify(this.progress));
+        const storageKey = `ariaProgress_${this.currentContentType}`;
+        localStorage.setItem(storageKey, JSON.stringify(this.progress));
     }
 
     resetProgress() {
-        localStorage.removeItem('ariaProgress');
+        const storageKey = `ariaProgress_${this.currentContentType}`;
+        localStorage.removeItem(storageKey);
         this.progress = this.createDefaultProgress();
         this.currentIsland = null;
         this.currentVillage = null;
@@ -121,10 +153,25 @@ class AriaGame {
     // ==========================================
 
     bindEvents() {
-        // Start button
+        // Start button - go to content selection
         document.getElementById('start-btn').addEventListener('click', () => {
-            this.showScreen('islands');
+            this.showScreen('content');
             this.playSound('start');
+        });
+
+        // Back to start from content selection
+        document.getElementById('back-to-start').addEventListener('click', () => {
+            this.showScreen('start');
+        });
+
+        // Content type cards
+        document.querySelectorAll('.content-type-card').forEach(card => {
+            card.addEventListener('click', () => {
+                if (!card.classList.contains('coming-soon')) {
+                    const contentType = card.dataset.content;
+                    this.selectContentType(contentType);
+                }
+            });
         });
 
         // Island cards
@@ -135,6 +182,12 @@ class AriaGame {
                     this.openIsland(islandId);
                 }
             });
+        });
+
+        // Back to content selection button
+        document.getElementById('back-to-content').addEventListener('click', () => {
+            this.updateContentTypesUI();
+            this.showScreen('content');
         });
 
         // Back to islands button
@@ -229,8 +282,35 @@ class AriaGame {
     // ==========================================
 
     updateUI() {
+        this.updateContentTypesUI();
         this.updateIslandsUI();
         this.updateTotalStarsDisplay();
+    }
+
+    updateContentTypesUI() {
+        // Update content type cards with progress
+        document.querySelectorAll('.content-type-card').forEach(card => {
+            const contentType = card.dataset.content;
+            if (contentType && !card.classList.contains('coming-soon')) {
+                const storageKey = `ariaProgress_${contentType}`;
+                const saved = localStorage.getItem(storageKey);
+                let stars = 0;
+                
+                if (saved) {
+                    const progress = JSON.parse(saved);
+                    if (progress.islands) {
+                        stars = progress.islands.reduce((total, island) => {
+                            return total + island.villages.reduce((vTotal, v) => {
+                                return vTotal + v.challenges.filter(c => c.completed).length;
+                            }, 0);
+                        }, 0);
+                    }
+                }
+                
+                const starsEl = card.querySelector('.content-stars-earned');
+                if (starsEl) starsEl.textContent = stars;
+            }
+        });
     }
 
     updateTotalStarsDisplay() {
@@ -239,8 +319,11 @@ class AriaGame {
             el.textContent = totalStars;
         });
         // Update max stars (150 total for 3 islands × 5 villages × 10 challenges)
+        const maxStars = this.currentIslands.reduce((total, island) => {
+            return total + island.villages.length * 10;
+        }, 0);
         document.querySelectorAll('.total-stars-max').forEach(el => {
-            el.textContent = getTotalStarsPossible();
+            el.textContent = maxStars;
         });
     }
 
@@ -250,7 +333,7 @@ class AriaGame {
 
         document.querySelectorAll('.island-card').forEach(card => {
             const islandId = parseInt(card.dataset.island);
-            const island = ISLANDS[islandId];
+            const island = this.currentIslands[islandId];
             const islandProgress = this.getIslandProgress(islandId);
             const stars = this.getIslandStars(islandId);
             const maxStars = island.villages.length * 10;
@@ -352,7 +435,8 @@ class AriaGame {
     // ==========================================
 
     openIsland(islandId) {
-        this.currentIsland = ISLANDS[islandId];
+        this.currentIsland = this.currentIslands[islandId];
+        this.updateMapUI();
         this.showScreen('map');
         this.playSound('open');
     }
@@ -452,6 +536,10 @@ class AriaGame {
 
         const v = challenge.visual;
 
+        // ==========================================
+        // MATH VISUALS
+        // ==========================================
+        
         if (challenge.type === 'visual-addition') {
             const leftGroup = v.emoji.repeat(v.left);
             const rightGroup = v.emoji.repeat(v.right);
@@ -487,6 +575,111 @@ class AriaGame {
                     </div>
                 </div>
             `;
+        }
+
+        // ==========================================
+        // WRITING VISUALS
+        // ==========================================
+
+        // Large letter display
+        if (v.letter && v.style === 'large') {
+            return `<span class="visual-letter-large">${v.letter}</span>`;
+        }
+
+        // Uppercase letter
+        if (v.uppercase) {
+            return `<span class="visual-letter-large">${v.uppercase}</span>`;
+        }
+
+        // Lowercase letter
+        if (v.lowercase) {
+            return `<span class="visual-letter-large">${v.lowercase}</span>`;
+        }
+
+        // Word with emoji
+        if (v.emoji && v.word) {
+            return `
+                <div class="visual-word-emoji">
+                    <span class="visual-emoji">${v.emoji}</span>
+                    <span class="visual-word">${v.word}</span>
+                </div>
+            `;
+        }
+
+        // Letter sequence (ABC?)
+        if (v.sequence) {
+            return `
+                <div class="visual-sequence">
+                    ${v.sequence.map(letter => `<span class="sequence-letter">${letter}</span>`).join('')}
+                </div>
+            `;
+        }
+
+        // Vowels display
+        if (v.vowels) {
+            return `
+                <div class="visual-vowels">
+                    ${v.vowels.map(vowel => `<span class="vowel-letter">${vowel}</span>`).join(' ')}
+                </div>
+            `;
+        }
+
+        // Word display (for vowel counting, etc.)
+        if (v.word && !v.emoji) {
+            return `<span class="visual-word-large">${v.word}</span>`;
+        }
+
+        // Words list
+        if (v.words) {
+            return `
+                <div class="visual-words-list">
+                    ${v.words.map(word => `<span class="list-word">${word}</span>`).join(' • ')}
+                </div>
+            `;
+        }
+
+        // Scrambled letters
+        if (v.scrambled) {
+            const letters = v.scrambled.split('');
+            return `
+                <div class="visual-scrambled">
+                    ${letters.map(l => `<span class="scrambled-letter">${l}</span>`).join('')}
+                </div>
+            `;
+        }
+
+        // Letters to build word
+        if (v.letters) {
+            return `
+                <div class="visual-build-letters">
+                    ${v.letters.map(l => `<span class="build-letter">${l}</span>`).join('')}
+                </div>
+            `;
+        }
+
+        // Sentence context
+        if (v.sentence) {
+            return `<p class="visual-sentence">"${v.sentence}"</p>`;
+        }
+
+        // Poem/rhyme
+        if (v.poem) {
+            return `<p class="visual-poem">${v.poem}</p>`;
+        }
+
+        // Context hint
+        if (v.context) {
+            return `<span class="visual-context">(${v.context})</span>`;
+        }
+
+        // Base for word families
+        if (v.base) {
+            return `<span class="visual-word-family">${v.base}</span>`;
+        }
+
+        // Simple emoji
+        if (v.emoji && !v.word) {
+            return `<span class="visual-emoji-large">${v.emoji}</span>`;
         }
 
         return '';

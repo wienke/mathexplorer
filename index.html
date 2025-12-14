@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aria's Eiland Avontuur - Reken Spel</title>
-    <meta name="description" content="Een leuk rekenavontuur voor kinderen! Help Aria de eilanden te verkennen en los rekenpuzzels op.">
+    <title>Aria's Eiland Avontuur - Leer Spel</title>
+    <meta name="description" content="Een leuk leeravontuur voor kinderen! Help Aria de eilanden te verkennen met rekenen, schrijven en meer!">
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -14,14 +14,14 @@
         <div class="start-content">
             <div class="title-container">
                 <h1 class="game-title">Aria's Eiland Avontuur</h1>
-                <p class="subtitle">Een magisch reken-avontuur! 🌴✨</p>
+                <p class="subtitle">Een magisch leeravontuur! 🌴✨</p>
             </div>
             <div class="character-intro">
                 <div class="aria-avatar large">👧</div>
                 <p class="intro-text">
                     Hallo! Ik ben <strong>Aria</strong>! <br>
-                    Ik heb 3 geheimzinnige eilanden ontdekt, elk met 5 dorpen. <br>
-                    Wil je me helpen de dorpelingen te helpen met rekenen?
+                    Ik heb magische eilanden ontdekt waar je van alles kunt leren! <br>
+                    Ga je mee op avontuur?
                 </p>
             </div>
             <button id="start-btn" class="btn btn-primary btn-large">
@@ -38,9 +38,90 @@
         </div>
     </div>
 
+    <!-- Content Type Selection Screen -->
+    <div id="content-screen" class="screen">
+        <div class="content-header">
+            <div class="player-info">
+                <div class="aria-avatar small">👧</div>
+                <span class="player-name">Aria</span>
+            </div>
+            <button id="back-to-start" class="btn btn-back">
+                <span>← Terug</span>
+            </button>
+        </div>
+
+        <div class="content-title">
+            <h2>Wat wil je leren?</h2>
+            <p>Kies een onderwerp en begin je avontuur!</p>
+        </div>
+
+        <div class="content-types-container">
+            <!-- Math -->
+            <div class="content-type-card" data-content="math">
+                <div class="content-type-header" style="background: linear-gradient(135deg, #74C0FC, #4dabf7);">
+                    <span class="content-type-icon">🔢</span>
+                </div>
+                <div class="content-type-body">
+                    <h3 class="content-type-name">Rekenen</h3>
+                    <p class="content-type-description">Leer optellen, aftrekken en meer!</p>
+                    <div class="content-type-info">
+                        <span class="content-islands">3 eilanden</span>
+                        <span class="content-stars">
+                            <span class="content-stars-earned">0</span>/150 ⭐
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Writing -->
+            <div class="content-type-card" data-content="writing">
+                <div class="content-type-header" style="background: linear-gradient(135deg, #FF6B9D, #C44569);">
+                    <span class="content-type-icon">✏️</span>
+                </div>
+                <div class="content-type-body">
+                    <h3 class="content-type-name">Schrijven</h3>
+                    <p class="content-type-description">Leer letters en woorden!</p>
+                    <div class="content-type-info">
+                        <span class="content-islands">3 eilanden</span>
+                        <span class="content-stars">
+                            <span class="content-stars-earned">0</span>/150 ⭐
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nature - Coming Soon -->
+            <div class="content-type-card coming-soon" data-content="nature">
+                <div class="content-type-header" style="background: linear-gradient(135deg, #00B894, #00a085);">
+                    <span class="content-type-icon">🌿</span>
+                </div>
+                <div class="content-type-body">
+                    <h3 class="content-type-name">Natuur</h3>
+                    <p class="content-type-description">Ontdek dieren en planten!</p>
+                    <div class="content-type-status">🔒 Komt binnenkort!</div>
+                </div>
+            </div>
+
+            <!-- Reading - Coming Soon -->
+            <div class="content-type-card coming-soon" data-content="reading">
+                <div class="content-type-header" style="background: linear-gradient(135deg, #6C5CE7, #5541d7);">
+                    <span class="content-type-icon">📚</span>
+                </div>
+                <div class="content-type-body">
+                    <h3 class="content-type-name">Lezen</h3>
+                    <p class="content-type-description">Leer woorden en zinnen lezen!</p>
+                    <div class="content-type-status">🔒 Komt binnenkort!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Islands Selection Screen -->
     <div id="islands-screen" class="screen">
         <div class="islands-header">
+            <button id="back-to-content" class="btn btn-back">
+                <span>← Onderwerpen</span>
+            </button>
             <div class="player-info">
                 <div class="aria-avatar small">👧</div>
                 <span class="player-name">Aria</span>
@@ -327,7 +408,9 @@
         </div>
     </div>
 
+    <script src="js/content-types.js"></script>
     <script src="js/villages.js"></script>
+    <script src="js/writing-islands.js"></script>
     <script src="js/game.js"></script>
 </body>
 </html>
