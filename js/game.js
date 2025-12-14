@@ -311,29 +311,36 @@ class AriaGame {
                 return;
             }
             
-            marker.style.display = 'flex';
+            marker.style.display = '';
             
             const village = this.currentIsland.villages[villageId];
             const villageProgress = this.getVillageProgress(islandId, villageId);
             const stars = this.getVillageStars(islandId, villageId);
 
-            // Update village info
-            marker.querySelector('.village-icon').textContent = village.icon;
-            marker.querySelector('.village-label').textContent = village.name;
-            marker.querySelector('.stars-earned').textContent = stars;
+            // Update village info - icon is now inside .village-pin
+            const iconEl = marker.querySelector('.village-pin .village-icon') || marker.querySelector('.village-icon');
+            if (iconEl) iconEl.textContent = village.icon;
+            
+            const labelEl = marker.querySelector('.village-label');
+            if (labelEl) labelEl.textContent = village.name;
+            
+            const starsEl = marker.querySelector('.stars-earned');
+            if (starsEl) starsEl.textContent = stars;
 
             // Update locked/unlocked status
+            const statusEl = marker.querySelector('.village-status');
             if (villageProgress.unlocked) {
                 marker.classList.remove('locked');
-                marker.querySelector('.village-status').textContent = '';
+                if (statusEl) statusEl.textContent = '';
             } else {
                 marker.classList.add('locked');
-                marker.querySelector('.village-status').textContent = '🔒';
+                if (statusEl) statusEl.textContent = '🔒 Voltooi vorige';
             }
 
             // Update completed status
             if (villageProgress.completed) {
                 marker.classList.add('completed');
+                if (statusEl) statusEl.textContent = '✅ Voltooid!';
             } else {
                 marker.classList.remove('completed');
             }

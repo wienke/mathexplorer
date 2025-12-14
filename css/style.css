@@ -358,12 +358,13 @@ body {
     justify-content: center;
     align-items: center;
     padding: var(--spacing-md);
+    overflow: hidden;
 }
 
 .island-shape {
     position: relative;
     width: 100%;
-    max-width: 700px;
+    max-width: 600px;
     aspect-ratio: 1.2;
     background: 
         radial-gradient(ellipse 80% 70% at 50% 55%, var(--island-sand) 0%, var(--island-green) 60%, transparent 61%);
@@ -395,74 +396,147 @@ body {
     stroke-dasharray: 2 2;
 }
 
-/* Village Markers */
+/* Village Markers - Clean Pin Design */
 .village-marker {
     position: absolute;
     left: var(--pos-x);
     top: var(--pos-y);
-    transform: translate(-50%, -50%);
-    text-align: center;
+    transform: translate(-50%, -100%);
     cursor: pointer;
     transition: all 0.3s ease;
     z-index: 10;
 }
 
 .village-marker:hover:not(.locked) {
-    transform: translate(-50%, -50%) scale(1.15);
+    transform: translate(-50%, -100%) scale(1.1);
+    z-index: 20;
 }
 
 .village-marker.locked {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
-.village-marker.locked .village-icon {
-    filter: grayscale(70%);
+/* Village Pin Container */
+.village-pin {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
 }
 
+/* The Icon Circle */
 .village-icon {
-    font-size: 3rem;
-    display: block;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
-    transition: transform 0.3s ease;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.2),
+        inset 0 2px 4px rgba(255, 255, 255, 0.8);
+    border: 3px solid #fff;
+    transition: all 0.3s ease;
+    position: relative;
 }
 
 .village-marker:not(.locked):hover .village-icon {
-    animation: iconBounce 0.5s ease;
+    transform: scale(1.1);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.35),
+        0 4px 8px rgba(0, 0, 0, 0.25),
+        inset 0 2px 4px rgba(255, 255, 255, 0.8);
 }
 
-@keyframes iconBounce {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.3); }
+.village-marker.locked .village-icon {
+    filter: grayscale(80%);
+    background: linear-gradient(135deg, #d0d0d0 0%, #b0b0b0 100%);
+}
+
+.village-marker.completed .village-icon {
+    border-color: var(--success-green);
+    box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.3),
+        0 0 0 3px rgba(39, 174, 96, 0.3);
+}
+
+/* Pin pointer (triangle below circle) */
+.village-pin::after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 12px solid #fff;
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
+    margin-top: -2px;
+}
+
+/* Village Info Card (appears on hover/tap) */
+.village-info {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    border-radius: 12px;
+    padding: 10px 14px;
+    min-width: 120px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    text-align: center;
+}
+
+.village-info::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid white;
+}
+
+.village-marker:hover .village-info,
+.village-marker:focus .village-info {
+    opacity: 1;
+    visibility: visible;
 }
 
 .village-label {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: 700;
-    color: var(--text-light);
-    background: rgba(0, 0, 0, 0.6);
-    padding: 4px 10px;
-    border-radius: var(--radius-sm);
-    margin-top: 5px;
+    color: var(--text-dark);
     white-space: nowrap;
+    margin-bottom: 4px;
 }
 
 .village-stars {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     color: var(--accent-orange);
-    margin-top: 3px;
     font-weight: 600;
 }
 
 .village-status {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    font-size: 1.2rem;
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 2px;
 }
 
-.village-marker.completed .village-status::after {
-    content: '✅';
+.village-marker.locked .village-status {
+    color: #666;
+}
+
+.village-marker.completed .village-label {
+    color: var(--success-green);
 }
 
 /* ==========================================
@@ -1012,6 +1086,32 @@ body {
     
     .btn-back {
         align-self: flex-start;
+    }
+    
+    /* Smaller village pins on mobile */
+    .village-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 1.5rem;
+    }
+    
+    .village-pin::after {
+        border-left: 7px solid transparent;
+        border-right: 7px solid transparent;
+        border-top: 9px solid #fff;
+    }
+    
+    .village-info {
+        min-width: 100px;
+        padding: 8px 10px;
+    }
+    
+    .village-label {
+        font-size: 0.85rem;
+    }
+    
+    .village-stars {
+        font-size: 0.75rem;
     }
 }
 
