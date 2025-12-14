@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aria's Eiland Avontuur - Reken Spel</title>
+    <meta name="description" content="Een leuk rekenavontuur voor kinderen! Help Aria de eilanden te verkennen en los rekenpuzzels op.">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Start Screen -->
+    <div id="start-screen" class="screen active">
+        <div class="start-content">
+            <div class="title-container">
+                <h1 class="game-title">Aria's Eiland Avontuur</h1>
+                <p class="subtitle">Een magisch reken-avontuur! 🌴✨</p>
+            </div>
+            <div class="character-intro">
+                <div class="aria-avatar large">👧</div>
+                <p class="intro-text">
+                    Hallo! Ik ben <strong>Aria</strong>! <br>
+                    Ik heb 3 geheimzinnige eilanden ontdekt, elk met 5 dorpen. <br>
+                    Wil je me helpen de dorpelingen te helpen met rekenen?
+                </p>
+            </div>
+            <button id="start-btn" class="btn btn-primary btn-large">
+                <span>Start Avontuur!</span>
+                <span class="btn-icon">🚀</span>
+            </button>
+        </div>
+        <div class="floating-decorations">
+            <span class="float-item" style="--delay: 0s; --x: 10%;">🐚</span>
+            <span class="float-item" style="--delay: 1s; --x: 85%;">🌺</span>
+            <span class="float-item" style="--delay: 2s; --x: 25%;">🦋</span>
+            <span class="float-item" style="--delay: 0.5s; --x: 70%;">⭐</span>
+            <span class="float-item" style="--delay: 1.5s; --x: 50%;">🌸</span>
+        </div>
+    </div>
+
+    <!-- Islands Selection Screen -->
+    <div id="islands-screen" class="screen">
+        <div class="islands-header">
+            <div class="player-info">
+                <div class="aria-avatar small">👧</div>
+                <span class="player-name">Aria</span>
+            </div>
+            <div class="total-stars">
+                <span class="star-icon">⭐</span>
+                <span class="total-stars-count">0</span>
+                <span class="star-max">/ <span class="total-stars-max">150</span></span>
+            </div>
+        </div>
+
+        <div class="islands-title">
+            <h2>Kies je Eiland</h2>
+            <p>Verdien sterren om nieuwe eilanden te ontgrendelen!</p>
+        </div>
+
+        <div class="islands-container">
+            <!-- Island 1: Beginners -->
+            <div class="island-card" data-island="0">
+                <div class="island-card-header" style="background: linear-gradient(135deg, #74C0FC, #4dabf7);">
+                    <span class="island-icon-large">🌴</span>
+                    <div class="island-difficulty easy">Makkelijk</div>
+                </div>
+                <div class="island-card-body">
+                    <h3 class="island-name">Beginners Eiland</h3>
+                    <p class="island-description">Perfect voor kleine avonturiers! Leer de basis van rekenen.</p>
+                    <div class="island-info">
+                        <span class="island-villages">5 dorpen</span>
+                        <span class="island-stars-display">
+                            <span class="island-stars-earned">0</span>/<span class="island-stars-max">50</span> ⭐
+                        </span>
+                    </div>
+                    <div class="island-status"></div>
+                </div>
+            </div>
+
+            <!-- Island 2: Gevorderden -->
+            <div class="island-card locked" data-island="1">
+                <div class="island-card-header" style="background: linear-gradient(135deg, #00B894, #00a085);">
+                    <span class="island-icon-large">🏝️</span>
+                    <div class="island-difficulty medium">Gemiddeld</div>
+                </div>
+                <div class="island-card-body">
+                    <h3 class="island-name">Gevorderden Eiland</h3>
+                    <p class="island-description">Voor slimme rekenaars! Getallen tot 20 en meer uitdaging.</p>
+                    <div class="island-info">
+                        <span class="island-villages">5 dorpen</span>
+                        <span class="island-stars-display">
+                            <span class="island-stars-earned">0</span>/<span class="island-stars-max">50</span> ⭐
+                        </span>
+                    </div>
+                    <div class="island-status">🔒 30 ⭐ nodig</div>
+                </div>
+            </div>
+
+            <!-- Island 3: Experts -->
+            <div class="island-card locked" data-island="2">
+                <div class="island-card-header" style="background: linear-gradient(135deg, #6C5CE7, #5541d7);">
+                    <span class="island-icon-large">🗺️</span>
+                    <div class="island-difficulty hard">Moeilijk</div>
+                </div>
+                <div class="island-card-body">
+                    <h3 class="island-name">Experts Eiland</h3>
+                    <p class="island-description">Voor echte rekenmeesters! Grote getallen en nieuwe uitdagingen.</p>
+                    <div class="island-info">
+                        <span class="island-villages">5 dorpen</span>
+                        <span class="island-stars-display">
+                            <span class="island-stars-earned">0</span>/<span class="island-stars-max">50</span> ⭐
+                        </span>
+                    </div>
+                    <div class="island-status">🔒 80 ⭐ nodig</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map Screen -->
+    <div id="map-screen" class="screen">
+        <div class="map-header">
+            <button id="back-to-islands" class="btn btn-back">
+                <span>← Eilanden</span>
+            </button>
+            <div class="current-island-info">
+                <span id="current-island-icon" class="island-icon-small">🌴</span>
+                <span id="current-island-name">Beginners Eiland</span>
+            </div>
+            <div class="total-stars">
+                <span class="star-icon">⭐</span>
+                <span class="total-stars-count">0</span>
+                <span class="star-max">/ <span class="total-stars-max">150</span></span>
+            </div>
+        </div>
+        
+        <div class="island-map">
+            <div class="island-shape">
+                <!-- Village markers -->
+                <div class="village-marker" data-village="0" style="--pos-x: 20%; --pos-y: 75%;">
+                    <div class="village-icon">🏖️</div>
+                    <div class="village-label">Strand Dorp</div>
+                    <div class="village-stars"><span class="stars-earned">0</span>/10 ⭐</div>
+                    <div class="village-status"></div>
+                </div>
+                
+                <div class="village-marker locked" data-village="1" style="--pos-x: 75%; --pos-y: 70%;">
+                    <div class="village-icon">🌲</div>
+                    <div class="village-label">Bos Dorp</div>
+                    <div class="village-stars"><span class="stars-earned">0</span>/10 ⭐</div>
+                    <div class="village-status">🔒</div>
+                </div>
+                
+                <div class="village-marker locked" data-village="2" style="--pos-x: 50%; --pos-y: 25%;">
+                    <div class="village-icon">⛰️</div>
+                    <div class="village-label">Berg Dorp</div>
+                    <div class="village-stars"><span class="stars-earned">0</span>/10 ⭐</div>
+                    <div class="village-status">🔒</div>
+                </div>
+                
+                <div class="village-marker locked" data-village="3" style="--pos-x: 15%; --pos-y: 35%;">
+                    <div class="village-icon">🌊</div>
+                    <div class="village-label">Rivier Dorp</div>
+                    <div class="village-stars"><span class="stars-earned">0</span>/10 ⭐</div>
+                    <div class="village-status">🔒</div>
+                </div>
+                
+                <div class="village-marker locked" data-village="4" style="--pos-x: 80%; --pos-y: 20%;">
+                    <div class="village-icon">🏰</div>
+                    <div class="village-label">Kasteel Dorp</div>
+                    <div class="village-stars"><span class="stars-earned">0</span>/10 ⭐</div>
+                    <div class="village-status">🔒</div>
+                </div>
+
+                <!-- Path connections -->
+                <svg class="paths-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <path class="village-path" d="M 20 75 Q 45 72 75 70" />
+                    <path class="village-path" d="M 75 70 Q 65 45 50 25" />
+                    <path class="village-path" d="M 50 25 Q 30 30 15 35" />
+                    <path class="village-path" d="M 15 35 Q 45 25 80 20" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Village Screen -->
+    <div id="village-screen" class="screen">
+        <div class="village-header">
+            <button id="back-to-map" class="btn btn-back">
+                <span>← Terug naar kaart</span>
+            </button>
+            <div class="village-title-container">
+                <span id="village-icon" class="village-icon-large">🏖️</span>
+                <h2 id="village-name">Strand Dorp</h2>
+            </div>
+            <div class="village-progress">
+                <span id="village-stars">0</span>/10 ⭐
+            </div>
+        </div>
+
+        <div class="village-story">
+            <p id="village-description"></p>
+        </div>
+
+        <div class="challenges-grid" id="challenges-grid">
+            <!-- Challenges will be generated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Challenge Screen -->
+    <div id="challenge-screen" class="screen">
+        <div class="challenge-container">
+            <div class="challenge-header">
+                <span id="challenge-number" class="challenge-num">Opdracht 1</span>
+                <button id="close-challenge" class="btn-close">✕</button>
+            </div>
+            
+            <div class="challenge-content">
+                <div id="challenge-visual" class="challenge-visual"></div>
+                <div id="challenge-question" class="challenge-question"></div>
+                <div id="challenge-options" class="challenge-options"></div>
+            </div>
+            
+            <div id="challenge-feedback" class="challenge-feedback hidden">
+                <div class="feedback-content">
+                    <span class="feedback-icon"></span>
+                    <span class="feedback-text"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="modal hidden">
+        <div class="modal-content success-content">
+            <div class="confetti-container">
+                <span class="confetti">🎉</span>
+                <span class="confetti">⭐</span>
+                <span class="confetti">🌟</span>
+                <span class="confetti">✨</span>
+                <span class="confetti">🎊</span>
+            </div>
+            <div class="success-star">⭐</div>
+            <h2 class="success-title">Goed gedaan!</h2>
+            <p class="success-message" id="success-message">Je hebt het goed!</p>
+            <button id="next-challenge-btn" class="btn btn-primary">
+                Volgende opdracht →
+            </button>
+        </div>
+    </div>
+
+    <!-- Village Complete Modal -->
+    <div id="village-complete-modal" class="modal hidden">
+        <div class="modal-content village-complete-content">
+            <div class="trophy-container">
+                <span class="trophy">🏆</span>
+            </div>
+            <h2 class="complete-title">Dorp voltooid!</h2>
+            <p class="complete-message" id="complete-message"></p>
+            <div class="complete-stars">
+                ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
+            </div>
+            <button id="continue-btn" class="btn btn-primary btn-large">
+                Verder met het avontuur! 🗺️
+            </button>
+        </div>
+    </div>
+
+    <!-- Island Complete Modal -->
+    <div id="island-complete-modal" class="modal hidden">
+        <div class="modal-content island-complete-content">
+            <div class="trophy-container">
+                <span class="trophy">🏝️</span>
+                <span class="trophy">🏆</span>
+                <span class="trophy">🏝️</span>
+            </div>
+            <h2 class="complete-title">Eiland voltooid!</h2>
+            <p class="complete-message" id="island-complete-message"></p>
+            <div class="complete-stars-count">
+                <span id="island-complete-stars">50</span> ⭐ verdiend!
+            </div>
+            <button id="island-continue-btn" class="btn btn-primary btn-large">
+                Naar de eilanden! 🗺️
+            </button>
+        </div>
+    </div>
+
+    <!-- Game Complete Modal -->
+    <div id="game-complete-modal" class="modal hidden">
+        <div class="modal-content game-complete-content">
+            <div class="crown-container">
+                <span class="crown">👑</span>
+            </div>
+            <h2 class="game-complete-title">Je bent de Ultieme Eiland Kampioen!</h2>
+            <p class="game-complete-message">
+                Wauw! Je hebt alle 150 opdrachten voltooid! <br>
+                Aria en alle dorpelingen op alle eilanden zijn zo blij met jouw hulp!
+            </p>
+            <div class="final-stars">
+                <span class="big-star">🌟</span>
+                <span id="final-star-count">150</span>
+                <span class="star-label">sterren!</span>
+            </div>
+            <button id="play-again-btn" class="btn btn-primary btn-large">
+                Speel opnieuw! 🔄
+            </button>
+        </div>
+    </div>
+
+    <script src="js/villages.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>

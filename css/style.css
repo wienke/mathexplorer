@@ -1,0 +1,1259 @@
+/* ==========================================
+   Aria's Eiland Avontuur - Main Stylesheet
+   ========================================== */
+
+/* CSS Variables */
+:root {
+    /* Color Palette - Vibrant & Child-friendly */
+    --primary: #6C5CE7;
+    --primary-light: #A29BFE;
+    --primary-dark: #5541D7;
+    
+    --secondary: #00CEC9;
+    --secondary-light: #81ECEC;
+    
+    --accent-orange: #FDCB6E;
+    --accent-pink: #FD79A8;
+    --accent-green: #00B894;
+    --accent-coral: #FF7675;
+    
+    --bg-gradient-start: #667EEA;
+    --bg-gradient-end: #764BA2;
+    
+    --island-sand: #F8E9A1;
+    --island-green: #55A630;
+    --island-water: #74C0FC;
+    
+    --text-dark: #2D3436;
+    --text-light: #FFFFFF;
+    --text-muted: #636E72;
+    
+    /* Shadows & Effects */
+    --shadow-soft: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.15);
+    --shadow-strong: 0 15px 50px rgba(0, 0, 0, 0.25);
+    --shadow-glow: 0 0 30px rgba(108, 92, 231, 0.4);
+    
+    /* Typography */
+    --font-main: 'Nunito', sans-serif;
+    
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    
+    /* Border Radius */
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+    --radius-round: 50%;
+}
+
+/* Reset & Base */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-family: var(--font-main);
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+/* Screen Management */
+.screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.screen.active {
+    display: flex;
+    flex-direction: column;
+    opacity: 1;
+}
+
+/* ==========================================
+   START SCREEN
+   ========================================== */
+
+#start-screen {
+    background: linear-gradient(180deg, #74C0FC 0%, #667EEA 50%, #764BA2 100%);
+    justify-content: center;
+    align-items: center;
+    padding: var(--spacing-lg);
+    position: relative;
+    overflow: hidden;
+}
+
+.start-content {
+    text-align: center;
+    z-index: 10;
+    max-width: 600px;
+}
+
+.title-container {
+    margin-bottom: var(--spacing-xl);
+}
+
+.game-title {
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    font-weight: 800;
+    color: var(--text-light);
+    text-shadow: 
+        0 4px 0 var(--primary-dark),
+        0 8px 20px rgba(0, 0, 0, 0.3);
+    letter-spacing: 2px;
+    animation: titleBounce 2s ease-in-out infinite;
+}
+
+@keyframes titleBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.subtitle {
+    font-size: 1.4rem;
+    color: var(--accent-orange);
+    margin-top: var(--spacing-sm);
+    font-weight: 600;
+}
+
+.character-intro {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    box-shadow: var(--shadow-strong);
+}
+
+.aria-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--accent-pink), var(--primary-light));
+    border-radius: var(--radius-round);
+    box-shadow: var(--shadow-medium);
+}
+
+.aria-avatar.large {
+    width: 120px;
+    height: 120px;
+    font-size: 60px;
+    margin: 0 auto var(--spacing-md);
+    animation: avatarFloat 3s ease-in-out infinite;
+}
+
+.aria-avatar.small {
+    width: 45px;
+    height: 45px;
+    font-size: 24px;
+}
+
+@keyframes avatarFloat {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-15px) rotate(5deg); }
+}
+
+.intro-text {
+    font-size: 1.2rem;
+    color: var(--text-dark);
+    line-height: 1.8;
+}
+
+/* Floating Decorations */
+.floating-decorations {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.float-item {
+    position: absolute;
+    font-size: 2.5rem;
+    left: var(--x);
+    animation: floatUp 8s ease-in-out infinite;
+    animation-delay: var(--delay);
+    opacity: 0.8;
+}
+
+@keyframes floatUp {
+    0% { 
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.8; }
+    100% { 
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* ==========================================
+   BUTTONS
+   ========================================== */
+
+.btn {
+    font-family: var(--font-main);
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent-orange), #F39C12);
+    color: var(--text-dark);
+    padding: var(--spacing-md) var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    font-size: 1.3rem;
+    box-shadow: 
+        0 4px 0 #D68910,
+        var(--shadow-medium);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 
+        0 7px 0 #D68910,
+        var(--shadow-strong);
+}
+
+.btn-primary:active {
+    transform: translateY(2px);
+    box-shadow: 
+        0 2px 0 #D68910,
+        var(--shadow-soft);
+}
+
+.btn-large {
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: 1.4rem;
+}
+
+.btn-icon {
+    font-size: 1.5rem;
+}
+
+.btn-back {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--text-light);
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    backdrop-filter: blur(10px);
+}
+
+.btn-back:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateX(-5px);
+}
+
+.btn-close {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--text-light);
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-round);
+    font-size: 1.5rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-close:hover {
+    background: var(--accent-coral);
+    transform: rotate(90deg);
+}
+
+/* ==========================================
+   MAP SCREEN
+   ========================================== */
+
+#map-screen {
+    background: linear-gradient(180deg, #74C0FC 0%, #5FB4F5 40%, #4DA8E8 100%);
+    padding: var(--spacing-md);
+}
+
+.map-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-md);
+}
+
+.player-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.player-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-light);
+}
+
+.total-stars {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-light);
+    background: rgba(255, 215, 0, 0.3);
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--radius-md);
+}
+
+.star-icon {
+    font-size: 1.5rem;
+    animation: starPulse 2s ease-in-out infinite;
+}
+
+@keyframes starPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+.star-max {
+    opacity: 0.7;
+    font-size: 1rem;
+}
+
+.island-map {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--spacing-md);
+}
+
+.island-shape {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    aspect-ratio: 1.2;
+    background: 
+        radial-gradient(ellipse 80% 70% at 50% 55%, var(--island-sand) 0%, var(--island-green) 60%, transparent 61%);
+    border-radius: 45% 55% 60% 40% / 50% 45% 55% 50%;
+    box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.3),
+        inset 0 -20px 40px rgba(0, 128, 0, 0.2);
+    animation: islandFloat 6s ease-in-out infinite;
+}
+
+@keyframes islandFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.paths-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.village-path {
+    fill: none;
+    stroke: rgba(139, 90, 43, 0.5);
+    stroke-width: 0.8;
+    stroke-dasharray: 2 2;
+}
+
+/* Village Markers */
+.village-marker {
+    position: absolute;
+    left: var(--pos-x);
+    top: var(--pos-y);
+    transform: translate(-50%, -50%);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.village-marker:hover:not(.locked) {
+    transform: translate(-50%, -50%) scale(1.15);
+}
+
+.village-marker.locked {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.village-marker.locked .village-icon {
+    filter: grayscale(70%);
+}
+
+.village-icon {
+    font-size: 3rem;
+    display: block;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+    transition: transform 0.3s ease;
+}
+
+.village-marker:not(.locked):hover .village-icon {
+    animation: iconBounce 0.5s ease;
+}
+
+@keyframes iconBounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+}
+
+.village-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-light);
+    background: rgba(0, 0, 0, 0.6);
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    margin-top: 5px;
+    white-space: nowrap;
+}
+
+.village-stars {
+    font-size: 0.75rem;
+    color: var(--accent-orange);
+    margin-top: 3px;
+    font-weight: 600;
+}
+
+.village-status {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    font-size: 1.2rem;
+}
+
+.village-marker.completed .village-status::after {
+    content: '✅';
+}
+
+/* ==========================================
+   VILLAGE SCREEN
+   ========================================== */
+
+#village-screen {
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+    padding: var(--spacing-md);
+}
+
+.village-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.village-title-container {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.village-icon-large {
+    font-size: 2.5rem;
+}
+
+.village-title-container h2 {
+    font-size: 1.8rem;
+    color: var(--text-light);
+    font-weight: 800;
+}
+
+.village-progress {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent-orange);
+    background: rgba(255, 255, 255, 0.2);
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--radius-md);
+}
+
+.village-story {
+    background: rgba(255, 255, 255, 0.95);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-md);
+    text-align: center;
+    box-shadow: var(--shadow-medium);
+}
+
+.village-story p {
+    font-size: 1.1rem;
+    color: var(--text-dark);
+}
+
+.challenges-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-xl);
+    backdrop-filter: blur(10px);
+}
+
+@media (max-width: 600px) {
+    .challenges-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.challenge-card {
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, #fff, #f0f0f0);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-soft);
+    position: relative;
+    overflow: hidden;
+}
+
+.challenge-card:hover:not(.locked):not(.completed) {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: var(--shadow-strong);
+}
+
+.challenge-card.locked {
+    background: linear-gradient(135deg, #ddd, #ccc);
+    cursor: not-allowed;
+}
+
+.challenge-card.completed {
+    background: linear-gradient(135deg, var(--accent-green), #2ECC71);
+}
+
+.challenge-card.completed::after {
+    content: '⭐';
+    position: absolute;
+    font-size: 2rem;
+    animation: starEarn 0.5s ease;
+}
+
+@keyframes starEarn {
+    0% { transform: scale(0) rotate(-180deg); }
+    100% { transform: scale(1) rotate(0); }
+}
+
+.challenge-number {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.challenge-card.locked .challenge-number {
+    color: #999;
+}
+
+.challenge-card.locked .challenge-number::after {
+    content: '🔒';
+    display: block;
+    font-size: 1.2rem;
+    margin-top: 5px;
+}
+
+.challenge-card.completed .challenge-number {
+    color: var(--text-light);
+}
+
+/* ==========================================
+   CHALLENGE SCREEN
+   ========================================== */
+
+#challenge-screen {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    justify-content: center;
+    align-items: center;
+    padding: var(--spacing-lg);
+}
+
+.challenge-container {
+    background: white;
+    border-radius: var(--radius-xl);
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-strong);
+    animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.challenge-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md);
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.challenge-num {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-light);
+}
+
+.challenge-content {
+    padding: var(--spacing-xl) var(--spacing-lg);
+    text-align: center;
+}
+
+.challenge-visual {
+    font-size: 3rem;
+    margin-bottom: var(--spacing-lg);
+    line-height: 1.4;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.visual-group {
+    display: inline-flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.challenge-question {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: var(--spacing-lg);
+    line-height: 1.4;
+}
+
+.challenge-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+}
+
+.option-btn {
+    padding: var(--spacing-md);
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: var(--font-main);
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border: 3px solid transparent;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-soft);
+}
+
+.option-btn:hover {
+    background: linear-gradient(135deg, var(--secondary-light), var(--secondary));
+    border-color: var(--secondary);
+    transform: scale(1.05);
+}
+
+.option-btn.correct {
+    background: linear-gradient(135deg, var(--accent-green), #2ECC71) !important;
+    border-color: var(--accent-green) !important;
+    color: white;
+    animation: correctPulse 0.5s ease;
+}
+
+@keyframes correctPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.option-btn.incorrect {
+    background: linear-gradient(135deg, var(--accent-coral), #E74C3C) !important;
+    border-color: var(--accent-coral) !important;
+    color: white;
+    animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-10px); }
+    40%, 80% { transform: translateX(10px); }
+}
+
+.challenge-feedback {
+    padding: var(--spacing-md);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.challenge-feedback.hidden {
+    display: none;
+}
+
+.feedback-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.feedback-content.success {
+    color: var(--accent-green);
+}
+
+.feedback-content.error {
+    color: var(--accent-coral);
+}
+
+/* ==========================================
+   MODALS
+   ========================================== */
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+    text-align: center;
+    max-width: 450px;
+    width: 90%;
+    box-shadow: var(--shadow-strong);
+    animation: modalPop 0.4s ease;
+}
+
+@keyframes modalPop {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Success Modal */
+.success-content {
+    position: relative;
+    overflow: hidden;
+}
+
+.confetti-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.confetti {
+    position: absolute;
+    font-size: 2rem;
+    animation: confettiFall 1s ease-out forwards;
+}
+
+.confetti:nth-child(1) { left: 10%; animation-delay: 0s; }
+.confetti:nth-child(2) { left: 30%; animation-delay: 0.1s; }
+.confetti:nth-child(3) { left: 50%; animation-delay: 0.2s; }
+.confetti:nth-child(4) { left: 70%; animation-delay: 0.15s; }
+.confetti:nth-child(5) { left: 90%; animation-delay: 0.05s; }
+
+@keyframes confettiFall {
+    0% {
+        transform: translateY(-50px) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(200px) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+.success-star {
+    font-size: 5rem;
+    animation: starSpin 0.8s ease;
+}
+
+@keyframes starSpin {
+    0% {
+        transform: scale(0) rotate(-360deg);
+    }
+    100% {
+        transform: scale(1) rotate(0);
+    }
+}
+
+.success-title {
+    font-size: 2rem;
+    color: var(--accent-green);
+    margin: var(--spacing-md) 0;
+}
+
+.success-message {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Village Complete Modal */
+.trophy-container {
+    margin-bottom: var(--spacing-md);
+}
+
+.trophy {
+    font-size: 5rem;
+    animation: trophyBounce 1s ease infinite;
+}
+
+@keyframes trophyBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+.complete-title {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.complete-message {
+    font-size: 1.2rem;
+    color: var(--text-dark);
+    margin-bottom: var(--spacing-md);
+}
+
+.complete-stars {
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-lg);
+    letter-spacing: 5px;
+}
+
+/* Game Complete Modal */
+.crown-container {
+    margin-bottom: var(--spacing-md);
+}
+
+.crown {
+    font-size: 6rem;
+    animation: crownGlow 2s ease infinite;
+}
+
+@keyframes crownGlow {
+    0%, 100% { 
+        filter: drop-shadow(0 0 10px gold);
+        transform: scale(1);
+    }
+    50% { 
+        filter: drop-shadow(0 0 30px gold);
+        transform: scale(1.1);
+    }
+}
+
+.game-complete-title {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.game-complete-message {
+    font-size: 1.1rem;
+    color: var(--text-dark);
+    margin-bottom: var(--spacing-lg);
+    line-height: 1.8;
+}
+
+.final-stars {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.big-star {
+    font-size: 3rem;
+}
+
+#final-star-count {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--accent-orange);
+}
+
+.star-label {
+    font-size: 1.5rem;
+    color: var(--text-muted);
+}
+
+/* ==========================================
+   RESPONSIVE ADJUSTMENTS
+   ========================================== */
+
+@media (max-width: 768px) {
+    .game-title {
+        font-size: 2.2rem;
+    }
+    
+    .aria-avatar.large {
+        width: 80px;
+        height: 80px;
+        font-size: 40px;
+    }
+    
+    .intro-text {
+        font-size: 1rem;
+    }
+    
+    .village-icon {
+        font-size: 2rem;
+    }
+    
+    .village-label {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+    }
+    
+    .village-stars {
+        font-size: 0.65rem;
+    }
+    
+    .challenge-question {
+        font-size: 1.3rem;
+    }
+    
+    .challenge-visual {
+        font-size: 2rem;
+    }
+    
+    .option-btn {
+        padding: var(--spacing-sm);
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .map-header {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .village-header {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .btn-back {
+        align-self: flex-start;
+    }
+}
+
+/* ==========================================
+   ISLANDS SELECTION SCREEN
+   ========================================== */
+
+#islands-screen {
+    background: linear-gradient(180deg, #667EEA 0%, #764BA2 50%, #5541D7 100%);
+    padding: var(--spacing-md);
+}
+
+.islands-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-md);
+}
+
+.islands-title {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.islands-title h2 {
+    font-size: 2.5rem;
+    color: var(--text-light);
+    font-weight: 800;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    margin-bottom: var(--spacing-xs);
+}
+
+.islands-title p {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.islands-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-md);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Island Cards */
+.island-card {
+    width: 320px;
+    background: white;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-strong);
+    cursor: pointer;
+    transition: all 0.4s ease;
+    position: relative;
+}
+
+.island-card:hover:not(.locked) {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.island-card.locked {
+    opacity: 0.7;
+    cursor: not-allowed;
+    filter: grayscale(30%);
+}
+
+.island-card.locked:hover {
+    transform: none;
+}
+
+.island-card.completed {
+    box-shadow: 0 0 30px rgba(46, 204, 113, 0.5), var(--shadow-strong);
+}
+
+.island-card.completed::before {
+    content: '✅';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 2rem;
+    z-index: 10;
+}
+
+.island-card-header {
+    padding: var(--spacing-xl) var(--spacing-md);
+    text-align: center;
+    position: relative;
+}
+
+.island-icon-large {
+    font-size: 5rem;
+    display: block;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
+    animation: islandIconFloat 3s ease-in-out infinite;
+}
+
+@keyframes islandIconFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.island-difficulty {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: var(--spacing-sm);
+}
+
+.island-difficulty.easy {
+    background: rgba(255, 255, 255, 0.9);
+    color: #00B894;
+}
+
+.island-difficulty.medium {
+    background: rgba(255, 255, 255, 0.9);
+    color: #F39C12;
+}
+
+.island-difficulty.hard {
+    background: rgba(255, 255, 255, 0.9);
+    color: #E74C3C;
+}
+
+.island-card-body {
+    padding: var(--spacing-md);
+}
+
+.island-card-body h3 {
+    font-size: 1.5rem;
+    color: var(--text-dark);
+    margin-bottom: var(--spacing-xs);
+}
+
+.island-description {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.5;
+}
+
+.island-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid #eee;
+}
+
+.island-villages {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.island-stars-display {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent-orange);
+}
+
+.island-status {
+    margin-top: var(--spacing-sm);
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    min-height: 24px;
+}
+
+.island-card.locked .island-status {
+    color: var(--accent-coral);
+}
+
+/* Current Island Info in Map Header */
+.current-island-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-light);
+}
+
+.island-icon-small {
+    font-size: 2rem;
+}
+
+/* Island Complete Modal */
+.island-complete-content {
+    background: linear-gradient(180deg, #fff 0%, #f0fff0 100%);
+}
+
+.complete-stars-count {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent-orange);
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Responsive Islands */
+@media (max-width: 768px) {
+    .islands-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .island-card {
+        width: 100%;
+        max-width: 350px;
+    }
+    
+    .islands-title h2 {
+        font-size: 1.8rem;
+    }
+    
+    .island-icon-large {
+        font-size: 4rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .islands-header {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .island-card-header {
+        padding: var(--spacing-md);
+    }
+    
+    .island-icon-large {
+        font-size: 3.5rem;
+    }
+}
